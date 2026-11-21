@@ -1,5 +1,6 @@
 package com.learning.external_api_intergration.service;
 
+import com.learning.external_api_intergration.dto.ExternalPost;
 import com.learning.external_api_intergration.dto.ExternalUser;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -30,5 +31,15 @@ public class ExternalUserService {
                 .uri("/users/{id}", id) //URL pattern
                 .retrieve()
                 .body(ExternalUser.class);// only one user expected
+    }
+    public List<ExternalPost> getPostsByUserId(Long userId){
+        return restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/posts")
+                        .queryParam("userId", userId)
+                        .build())
+                .retrieve()
+                .body(new ParameterizedTypeReference<List<ExternalPost>>() {
+                });
     }
 }

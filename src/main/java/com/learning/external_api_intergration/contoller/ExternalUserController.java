@@ -1,11 +1,9 @@
 package com.learning.external_api_intergration.contoller;
 
+import com.learning.external_api_intergration.dto.ExternalPost;
 import com.learning.external_api_intergration.dto.ExternalUser;
 import com.learning.external_api_intergration.service.ExternalUserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +23,9 @@ public class ExternalUserController {
     @GetMapping("/users/{id}")
     public ExternalUser getUserById(@PathVariable Long id){
         return externalUserService.getUserById(id);
+    }
+    @GetMapping("/posts")
+    public List<ExternalPost> getPostsByUserId(@RequestParam Long userId){
+        return externalUserService.getPostsByUserId(userId);
     }
 }
