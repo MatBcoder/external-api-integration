@@ -25,4 +25,10 @@ public class ExternalUserService {
                 .body(new ParameterizedTypeReference<List<ExternalUser>>() {});//converting JSON into Java objects list
 
     }
+    public ExternalUser getUserById(Long id){
+        return restClient.get()
+                .uri("/users/{id}", id) //URL pattern
+                .retrieve()
+                .body(ExternalUser.class);// only one user expected
+    }
 }
