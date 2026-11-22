@@ -1,8 +1,10 @@
 package com.learning.external_api_intergration.service;
 
 import com.learning.external_api_intergration.dto.ExternalPost;
+import com.learning.external_api_intergration.dto.ExternalPostRequest;
 import com.learning.external_api_intergration.dto.ExternalUser;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -41,5 +43,13 @@ public class ExternalUserService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<List<ExternalPost>>() {
                 });
+    }
+    public ExternalPost createPost(ExternalPostRequest postRequest){
+        return restClient.post()
+                .uri("/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(postRequest) //sending the actual data ie. passing Java abject into the request body
+                .retrieve()
+                .body(ExternalPost.class);
     }
 }
