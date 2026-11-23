@@ -1,9 +1,8 @@
 package com.learning.external_api_intergration.service;
 
-import com.learning.external_api_intergration.dto.ExternalPost;
-import com.learning.external_api_intergration.dto.ExternalPostRequest;
-import com.learning.external_api_intergration.dto.ExternalUser;
+import com.learning.external_api_intergration.dto.*;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -14,12 +13,16 @@ import java.util.List;
 @Service
 public class ExternalUserService {
     private final RestClient restClient;
+    private final RestClient dummyJsonClient;
 
     public ExternalUserService (RestClient.Builder restClientBuilder){
         this.restClient = restClientBuilder
                 .baseUrl("https://jsonplaceholder.typicode.com") //base address ofthe external API
                 .build();
 
+        this.dummyJsonClient = restClientBuilder
+                .baseUrl("https://dummyjson.com")
+                .build();
     }
     public List<ExternalUser> getAllUsers(){
         return restClient.get() //sending the Http request
@@ -52,4 +55,22 @@ public class ExternalUserService {
                 .retrieve()
                 .body(ExternalPost.class);
     }
+    //the Authentication methods to DummyJson
+    public ExtAuthLoginResponse login(ExtAuthLoginRequest loginRequest){
+        return dummyJsonClient.post()
+                .uri("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(loginRequest) //sends the username and password
+                .retrieve()
+                .body(ExtAuthLoginResponse.class); //conversion from JSON to Java object
+    }
+    public ExtAuthenticatedUser getAuthenticatedUser(String authorizationHeader){
+        return dummyJsonClient.get()
+                .uri("/auth/me")
+                .header(HttpHeaders.AUTHORIZATION, authorizationHeader) //passing the authorisation header to dummyjson api
+                .retrieve()
+                .body(ExtAuthenticatedUser.class);
+    }
+
 }
